@@ -14,20 +14,41 @@ const signals = [
 function App() {
 
     const [showBlueBox, setShowBlueBox] = useState<number[]>([])
+    const [showGreenBox, setShowGreenBox] = useState<number[]>([])
+
+
+    const renderBlueBox = (id: number) => {
+        if (showBlueBox.includes(id)) {
+            setShowBlueBox(showBlueBox.filter(item => item !== id))
+        }
+        if (!showBlueBox.includes(id)) {
+            setShowBlueBox([...showBlueBox, id])
+        }
+    }
+
+    const renderGreenBox = (id: number) => {
+        if (showGreenBox.includes(id)) {
+            setShowGreenBox(showGreenBox.filter(item => item !== id))
+        }
+        if (!showGreenBox.includes(id)) {
+            setShowGreenBox([...showGreenBox, id])
+        }
+    }
 
     return (
         <AppStyled>
             {signals.map(s => <div>
                 <div className={"grey-box"}>
                     <div className={"buttons"}>
-                        <button className={"show-blue-box-btn"}></button>
-                        <button className={"show-green-box-btn"}></button>
+                        <button className={"show-blue-box-btn"}
+                                onClick={() =>renderBlueBox(s.id)}></button>
+                        <button className={"show-green-box-btn"}
+                                onClick={() => renderGreenBox(s.id)}></button>
                     </div>
                 </div>
-                <div className={"blue-box"}></div>
-                <div className={"green-box"}></div>
+                {showBlueBox.includes(s.id) && <div className={"blue-box"}></div>}
+                {showGreenBox.includes(s.id) && <div className={"green-box"}></div>}
             </div>)}
-
         </AppStyled>
     );
 }
