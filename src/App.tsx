@@ -1,6 +1,7 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./App.css";
 import styled from "styled-components";
+import {useInView} from "react-intersection-observer";
 
 const signals = [
     {id: 1},
@@ -12,6 +13,11 @@ const signals = [
 
 
 function App() {
+
+    const {ref, inView, entry} = useInView({
+        /* Optional options */
+        threshold: 0,
+    });
 
     const [showBlueBox, setShowBlueBox] = useState<number[]>([])
     const [showGreenBox, setShowGreenBox] = useState<number[]>([])
@@ -35,19 +41,23 @@ function App() {
         }
     }
 
+
+    useEffect(() => {
+        console.log(inView)
+    },[showBlueBox, ref])
     return (
         <AppStyled>
             {signals.map(s => <div>
                 <div className={"grey-box"}>
                     <div className={"buttons"}>
                         <button className={"show-blue-box-btn"}
-                                onClick={() =>renderBlueBox(s.id)}></button>
+                                onClick={() => renderBlueBox(s.id)}></button>
                         <button className={"show-green-box-btn"}
                                 onClick={() => renderGreenBox(s.id)}></button>
                     </div>
                 </div>
-                {showBlueBox.includes(s.id) && <div className={"blue-box"}></div>}
-                {showGreenBox.includes(s.id) && <div className={"green-box"}></div>}
+                {showBlueBox.includes(s.id) && <div ref={ref} className={"blue-box"}></div>}
+                {showGreenBox.includes(s.id) && <div ref={ref} className={"green-box"}></div>}
             </div>)}
         </AppStyled>
     );
