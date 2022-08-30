@@ -42,6 +42,7 @@ function App() {
     }
 
 
+
     useEffect(() => {
         console.log(inView)
     },[showBlueBox, ref])
