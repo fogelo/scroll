@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./App.css";
 import styled from "styled-components";
 import {useInView} from "react-intersection-observer";
+import {Transition, animated} from "react-spring"
 
 function App() {
     const [signals, setSignals] = useState([
@@ -55,48 +56,81 @@ function App() {
                 </div>)}
             </div>
             <div>
-                {inputSignals.map(inS => inS.checked ? <div key={inS.id}>
-                    <div className={"grey-box"}>
-                        {inS.name}
-                        <div className={"buttons"}>
-                            <button className={"show-blue-box-btn"}
-                                    onClick={() => setSignals(signals.map(s => s.type === 1 && s.name.includes(inS.name) ? {
-                                        ...s,
-                                        checked: !s.checked
-                                    } : s))}>1,2
-                            </button>
-                            <button className={"show-green-box-btn"}
-                                    onClick={() => setSignals(signals.map(s => s.type === 3 && s.name.includes(inS.name) ? {
-                                        ...s,
-                                        checked: !s.checked
-                                    } : s))}>3
-                            </button>
-                        </div>
-                    </div>
-                    {
-                        absDeviationSignals.map(absS => {
-                                return (
-                                    absS.name.includes(inS.name) && absS.checked ?
-                                        <div className={"blue-box"}>{absS.name}</div> : ""
-                                )
-                            }
-                        )
-                    }
-                    {
-                        contributionSignals.map(absS => {
-                                return (
-                                    absS.name.includes(inS.name) && absS.checked ?
-                                        <div className={"green-box"}>{absS.name}</div> : ""
-                                )
-                            }
-                        )
-                    }
-                </div> : "")}
+                {inputSignals.map(inS => inS.checked ? <React.Fragment key={inS.id}>
+                        {
+                            <Transition items={inS.checked}
+                                        enter={{opacity: 1}}
+                                        leave={{opacity: 0}}
+                                        from={{opacity: 0}}
+                                        delay={200}
+                            >
+                                {(styles, item) => item &&
+                                    <animated.div className={"grey-box"} style={styles} key={inS.id}>
+                                        {inS.name}
+                                        <div className={"buttons"}>
+                                            <button className={"show-blue-box-btn"}
+                                                    onClick={() => setSignals(signals.map(s => s.type === 1 && s.name.includes(inS.name) ? {
+                                                        ...s,
+                                                        checked: !s.checked
+                                                    } : s))}>1,2
+                                            </button>
+                                            <button className={"show-green-box-btn"}
+                                                    onClick={() => setSignals(signals.map(s => s.type === 3 && s.name.includes(inS.name) ? {
+                                                        ...s,
+                                                        checked: !s.checked
+                                                    } : s))}>3
+                                            </button>
+                                        </div>
+                                    </animated.div>
+                                }
+                            </Transition>
+                        }
+                        {
+                            absDeviationSignals.map(absS => {
+                                    return (
+                                        absS.name.includes(inS.name) && absS.checked ?
+                                            <Transition items={absS.checked}
+                                                        enter={{opacity: 1}}
+                                                        leave={{opacity: 0}}
+                                                        from={{opacity: 0}}
+                                                        delay={200}
+                                            >
+                                                {(styles, item) => item &&
+                                                    <animated.div style={styles}>
+                                                        <div className={"blue-box"}>{absS.name}</div>
+                                                    </animated.div>}
+                                            </Transition>
+                                            : ""
+                                    )
+                                }
+                            )
+                        }
+                    </React.Fragment>
+                    : "")}
             </div>
         </AppStyled>
     );
 }
 
+// {
+//     absDeviationSignals.map(absS => {
+//             return (
+//                 absS.name.includes(inS.name) && absS.checked ?
+//                     <div className={"blue-box"}>{absS.name}</div> : ""
+//             )
+//         }
+//     )
+// }
+// {
+
+//     contributionSignals.map(absS => {
+//             return (
+//                 absS.name.includes(inS.name) && absS.checked ?
+//                     <div className={"green-box"}>{absS.name}</div> : ""
+//             )
+//         }
+//     )
+// }
 const AppStyled = styled.div`
   display: flex;
 
