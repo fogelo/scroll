@@ -44,7 +44,7 @@ function App() {
 
     const {ref, inView, entry} = useInView({
         /* Optional options */
-        threshold: 0,
+        threshold: 1,
     });
 
 
@@ -64,55 +64,75 @@ function App() {
                 </div>)}
             </div>
             <div>
-                {inputSignals.map(inS => inS.checked ? <React.Fragment key={inS.id}>
+                {inputSignals.map(inS => <React.Fragment key={inS.id}>
                     <CSSTransition
-                        // in={inS.checked}
-                        // nodeRef={inS.ref}
+                        in={inS.checked}
+                        nodeRef={inS.ref}
                         timeout={500}
                         classNames="input-signal"
                         onEntered={() => setCurrentRef(inS.ref)}
-                        // unmountOnExit
+                        unmountOnExit
                     >
-                        <div className={"grey-box"} key={inS.id} ref={inS.ref}>
-                            {inS.name}
-                            <div className={"buttons"}>
-                                <button className={"show-blue-box-btn"}
-                                        onClick={() => setSignals(signals.map(s => s.type === 1 && s.name.includes(inS.name) ? {
-                                            ...s,
-                                            checked: !s.checked
-                                        } : s))}>1,2
-                                </button>
-                                <button className={"show-green-box-btn"}
-                                        onClick={() => setSignals(signals.map(s => s.type === 3 && s.name.includes(inS.name) ? {
-                                            ...s,
-                                            checked: !s.checked
-                                        } : s))}>3
-                                </button>
+                        <div ref={ref}>
+                            <div className={"grey-box"} ref={inS.ref}>
+                                {inS.name}
+                                <div className={"buttons"}>
+                                    <button className={"show-blue-box-btn"}
+                                            onClick={() => setSignals(signals.map(s => s.type === 1 && s.name.includes(inS.name) ? {
+                                                ...s,
+                                                checked: !s.checked
+                                            } : s))}>1,2
+                                    </button>
+                                    <button className={"show-green-box-btn"}
+                                            onClick={() => setSignals(signals.map(s => s.type === 3 && s.name.includes(inS.name) ? {
+                                                ...s,
+                                                checked: !s.checked
+                                            } : s))}>3
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </CSSTransition>
 
-
                     {
-                        absDeviationSignals.map(absS => {
-                                return (
-                                    absS.name.includes(inS.name) && absS.checked ?
-                                        <div className={"blue-box"}>{absS.name}</div> : ""
-                                )
-                            }
+                        absDeviationSignals.map(absS => <React.Fragment key={inS.id}>
+                                <CSSTransition
+                                    in={absS.name.includes(inS.name) && absS.checked}
+                                    nodeRef={absS.ref}
+                                    timeout={500}
+                                    classNames="input-signal"
+                                    onEntered={() => setCurrentRef(absS.ref)}
+                                    unmountOnExit
+                                >
+                                    <div ref={ref}>
+                                        <div className={"blue-box"} ref={absS.ref}>
+                                            {absS.name}
+                                        </div>
+                                    </div>
+                                </CSSTransition>
+                            </React.Fragment>
                         )
                     }
                     {
-                        contributionSignals.map(absS => {
-                                return (
-                                    absS.name.includes(inS.name) && absS.checked ?
-                                        <div className={"green-box"}>{absS.name}</div> : ""
-                                )
-                            }
+                        contributionSignals.map(contrS => <React.Fragment key={inS.id}>
+                                <CSSTransition
+                                    in={contrS.name.includes(inS.name) && contrS.checked}
+                                    nodeRef={contrS.ref}
+                                    timeout={500}
+                                    classNames="input-signal"
+                                    onEntered={() => setCurrentRef(contrS.ref)}
+                                    unmountOnExit
+                                >
+                                    <div ref={ref}>
+                                        <div className={"green-box"} ref={contrS.ref}>
+                                            {contrS.name}
+                                        </div>
+                                    </div>
+                                </CSSTransition>
+                            </React.Fragment>
                         )
                     }
-
-                </React.Fragment> : "")}
+                </React.Fragment>)}
             </div>
         </AppStyled>
     );
